@@ -1,0 +1,21 @@
+import requests
+from bs4 import BeautifulSoup
+
+url = "https://music.163.com/discover/toplist?id=3778678"
+
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+
+songs = soup.find_all("textarea")
+
+for song in songs:
+    song_name = song.text
+    song_id = song["data-res-id"]
+    
+    song_url = "https://music.163.com/song?id=" + song_id
+    song_response = requests.get(song_url)
+    song_soup = BeautifulSoup(song_response.text, "html.parser")
+    
+    singer = song_soup.find("span", {"class": "txt"}).text
+    
+    print(song_name + "---" + singer)
